@@ -1,8 +1,11 @@
 package com.comsysto.gradle
 import de.undercouch.gradle.tasks.download.Download
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Exec
 import org.gradle.language.cpp.plugins.CppPlugin
+import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.NativeLibrarySpec
 
 class CroLaBeFraCppPlugin extends CppPlugin {
@@ -10,7 +13,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
     @Override
     void apply(Project project) {
         super.apply(project)
-
+        def extension = project.extensions.create("crolabefra", CroLaBeFraPluginExtension)
         project.model {
             components {
                 hayai(NativeLibrarySpec) {
@@ -25,6 +28,20 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                                 include "*.hpp"
                             }
                         }
+                    }
+                }
+                runner(NativeExecutableSpec) {
+                    sources {
+                        cpp {
+                            source {
+                                srcDir extension.benchmarksPath
+                                include "*.cpp"
+                            }
+                        }
+                    }
+                    binaries.all {
+                        lib library: 'hayai', linkage: 'static'
+                        lib project: ':' + extension.projectToBenchmark, library: extension.outputLibraryName, linkage: "static"
                     }
                 }
             }
@@ -70,6 +87,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
         project.tasks.create(
                 [
                         name     : 'installHayaiLib',
+                        group    : 'crolabefra',
                         dependsOn: 'extractHayai',
                         type     : Copy,
                         action   : {
@@ -91,6 +109,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
         project.tasks.create(
                 [
                         name     : 'installHayai',
+                        group    : 'crolabefra',
                         dependsOn: 'extractHayai',
                         type     : Copy,
                         action   : {
@@ -110,6 +129,27 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     include '*.hpp'
                 }
         )
+
+        project.tasks.create(
+                [
+                        name     : 'runHayaiBenchmarks',
+                        group    : 'crolabefra',
+                        dependsOn: ['installHayai','assemble', 'build'],
+                        type     : Exec
+                ],
+                {
+                    description "Executes assembled Hayai benchmarks"
+                    workingDir './build/binaries/runnerExecutable'
+                    commandLine Os.isFamily(Os.FAMILY_WINDOWS) ? 'runner.exe' : './runner'
+                }
+        )
+
+//        project.afterEvaluate {
+//            project.getTasksByName('build', true).forEach({ task ->
+//                println task.name
+//                task.dependsOn('installHayai')
+//            })
+//        }
 
     }
 }
