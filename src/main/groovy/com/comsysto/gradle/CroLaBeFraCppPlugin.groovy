@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Exec
 import org.gradle.language.cpp.plugins.CppPlugin
+import org.gradle.language.cpp.tasks.CppCompile
 import org.gradle.nativeplatform.NativeExecutableSpec
 import org.gradle.nativeplatform.NativeLibrarySpec
 
@@ -27,6 +28,12 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                                 srcDir "build/lib/hayai"
                                 include "*.hpp"
                             }
+                            builtBy(project.tasks.getByName('installHayai'));
+                        }
+                    }
+                    binaries.all{
+                        tasks.withType(CppCompile) {
+                            dependsOn 'installHayai'
                         }
                     }
                 }
@@ -75,6 +82,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 ],
                 {
                     description "Unpack Hayai library"
+                    mustRunAfter 'downloadHayai'
                     def dest = new File(project.buildDir, 'tmp/hayai')
                     def hayaiZipSrc = new File(project.buildDir, 'tmp/hayai.zip')
                     inputs.file hayaiZipSrc
@@ -95,7 +103,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                         }
                 ],
                 {
-                    mustRunAfter 'clean'
+                    mustRunAfter 'extractHayai'
                     description "Installing Hayai to build lib directory"
                     def dest = new File(project.projectDir, 'lib/hayai')
                     def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-master')
@@ -134,22 +142,16 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 [
                         name     : 'runHayaiBenchmarks',
                         group    : 'crolabefra',
-                        dependsOn: ['installHayai','assemble', 'build'],
+                        dependsOn: ['installHayai','assemble'],
                         type     : Exec
                 ],
                 {
+                    mustRunAfter 'assemble'
                     description "Executes assembled Hayai benchmarks"
                     workingDir './build/binaries/runnerExecutable'
                     commandLine Os.isFamily(Os.FAMILY_WINDOWS) ? 'runner.exe' : './runner'
                 }
         )
-
-//        project.afterEvaluate {
-//            project.getTasksByName('build', true).forEach({ task ->
-//                println task.name
-//                task.dependsOn('installHayai')
-//            })
-//        }
 
     }
 }
