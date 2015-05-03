@@ -14,19 +14,19 @@ class CroLaBeFraCppPlugin extends CppPlugin {
     @Override
     void apply(Project project) {
         super.apply(project)
-        def extension = project.extensions.create("crolabefra", CroLaBeFraPluginExtension)
+        def extension = project.extensions.create('crolabefra', CroLaBeFraPluginExtension)
         project.model {
             components {
                 hayai(NativeLibrarySpec) {
                     sources {
                         cpp {
                             source {
-                                srcDir "build/lib/hayai"
-                                include "*.cpp"
+                                srcDir 'build/lib/hayai'
+                                include '*.cpp'
                             }
                             exportedHeaders {
-                                srcDir "build/lib/hayai"
-                                include "*.hpp"
+                                srcDir 'build/lib/hayai'
+                                include '*.hpp'
                             }
                             builtBy(project.tasks.getByName('installHayai'));
                         }
@@ -37,18 +37,18 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                         }
                     }
                 }
-                runner(NativeExecutableSpec) {
+                hayaiRunner(NativeExecutableSpec) {
                     sources {
                         cpp {
                             source {
                                 srcDir extension.benchmarksPath
-                                include "*.cpp"
+                                include '*.cpp'
                             }
                         }
                     }
                     binaries.all {
                         lib library: 'hayai', linkage: 'static'
-                        lib project: ':' + extension.projectToBenchmark, library: extension.outputLibraryName, linkage: "static"
+                        lib project: ':' + extension.projectToBenchmark, library: extension.outputLibraryName, linkage: 'static'
                     }
                 }
             }
@@ -57,13 +57,10 @@ class CroLaBeFraCppPlugin extends CppPlugin {
         project.tasks.create(
                 [
                         name  : 'downloadHayai',
-                        type  : Download,
-                        action: {
-                            println 'Downloaded Hayai...'
-                        }
+                        type  : Download
                 ],
                 {
-                    description "Download Hayai HEAD revision from Github."
+                    description 'Download Hayai HEAD revision from Github.'
                     def destFile = new File(project.buildDir, 'tmp/hayai.zip')
                     outputs.dir destFile
                     src 'https://github.com/bensteinert/hayai/archive/master.zip'
@@ -75,13 +72,10 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 [
                         name     : 'extractHayai',
                         dependsOn: 'downloadHayai',
-                        type     : Copy,
-                        action   : {
-                            println 'Extracted Hayai...'
-                        }
+                        type     : Copy
                 ],
                 {
-                    description "Unpack Hayai library"
+                    description 'Unpack Hayai library'
                     mustRunAfter 'downloadHayai'
                     def dest = new File(project.buildDir, 'tmp/hayai')
                     def hayaiZipSrc = new File(project.buildDir, 'tmp/hayai.zip')
@@ -97,14 +91,11 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                         name     : 'installHayaiLib',
                         group    : 'crolabefra',
                         dependsOn: 'extractHayai',
-                        type     : Copy,
-                        action   : {
-                            println 'Installed Hayai to project lib folder'
-                        }
+                        type     : Copy
                 ],
                 {
                     mustRunAfter 'extractHayai'
-                    description "Installing Hayai to build lib directory"
+                    description 'Installing Hayai to the project lib directory for usage with other tools'
                     def dest = new File(project.projectDir, 'lib/hayai')
                     def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-master')
                     inputs.dir hayaiTmp
@@ -119,14 +110,11 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                         name     : 'installHayai',
                         group    : 'crolabefra',
                         dependsOn: 'extractHayai',
-                        type     : Copy,
-                        action   : {
-                            println 'Installed Hayai to project build folder'
-                        }
+                        type     : Copy
                 ],
                 {
                     mustRunAfter 'clean'
-                    description "Installing Hayai to build lib directory"
+                    description 'Installing Hayai source to build directory for usage with plugin'
                     def dest = new File(project.buildDir, 'lib/hayai')
                     def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-master/src')
                     inputs.dir hayaiTmp
@@ -140,16 +128,16 @@ class CroLaBeFraCppPlugin extends CppPlugin {
 
         project.tasks.create(
                 [
-                        name     : 'runHayaiBenchmarks',
+                        name     : 'runCppBenchmarks',
                         group    : 'crolabefra',
                         dependsOn: ['installHayai','assemble'],
                         type     : Exec
                 ],
                 {
                     mustRunAfter 'assemble'
-                    description "Executes assembled Hayai benchmarks"
-                    workingDir './build/binaries/runnerExecutable'
-                    commandLine Os.isFamily(Os.FAMILY_WINDOWS) ? 'runner.exe' : './runner'
+                    description 'Executes assembled Hayai Cpp benchmarks'
+                    workingDir './build/binaries/hayaiRunnerExecutable'
+                    commandLine Os.isFamily(Os.FAMILY_WINDOWS) ? 'hayaiRunner.exe' : './hayaiRunner'
                 }
         )
 
