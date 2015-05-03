@@ -63,7 +63,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     description 'Download Hayai HEAD revision from Github.'
                     def destFile = new File(project.buildDir, 'tmp/hayai.zip')
                     outputs.dir destFile
-                    src 'https://github.com/bensteinert/hayai/archive/master.zip'
+                    src 'https://github.com/bensteinert/hayai/archive/crolabefra-cpp-0.1.zip'
                     dest destFile
                 }
         )
@@ -97,7 +97,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mustRunAfter 'extractHayai'
                     description 'Installing Hayai to the project lib directory for usage with other tools'
                     def dest = new File(project.projectDir, 'lib/hayai')
-                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-master')
+                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-crolabefra-cpp-0.1')
                     inputs.dir hayaiTmp
                     outputs.dir dest
                     from hayaiTmp
@@ -116,7 +116,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mustRunAfter 'clean'
                     description 'Installing Hayai source to build directory for usage with plugin'
                     def dest = new File(project.buildDir, 'lib/hayai')
-                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-master/src')
+                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-hayai-crolabefra-cpp-0.1/src')
                     inputs.dir hayaiTmp
                     outputs.dir dest
                     from hayaiTmp
