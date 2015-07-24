@@ -15,6 +15,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
     void apply(Project project) {
         super.apply(project)
         def extension = project.extensions.create('crolabefra', CroLaBeFraPluginExtension)
+        def hayaiTag = 'crolabefra-cpp-0.1'
         project.model {
             components {
                 hayai(NativeLibrarySpec) {
@@ -63,7 +64,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     description 'Download Hayai HEAD revision from Github.'
                     def destFile = new File(project.buildDir, 'tmp/hayai.zip')
                     outputs.dir destFile
-                    src 'https://github.com/bensteinert/hayai/archive/crolabefra-cpp-0.1.zip'
+                    src "https://github.com/bensteinert/hayai/archive/${hayaiTag}.zip"
                     dest destFile
                 }
         )
@@ -88,7 +89,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
 
         project.tasks.create(
                 [
-                        name     : 'installHayaiLib',
+                        name     : 'installHayaiToLib',
                         group    : 'crolabefra',
                         dependsOn: 'extractHayai',
                         type     : Copy
@@ -97,7 +98,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mustRunAfter 'extractHayai'
                     description 'Installing Hayai to the project lib directory for usage with other tools'
                     def dest = new File(project.projectDir, 'lib/hayai')
-                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-crolabefra-cpp-0.1')
+                    def hayaiTmp = new File(project.buildDir, "tmp/hayai/hayai-${hayaiTag}")
                     inputs.dir hayaiTmp
                     outputs.dir dest
                     from hayaiTmp
@@ -116,7 +117,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mustRunAfter 'clean'
                     description 'Installing Hayai source to build directory for usage with plugin'
                     def dest = new File(project.buildDir, 'lib/hayai')
-                    def hayaiTmp = new File(project.buildDir, 'tmp/hayai/hayai-hayai-crolabefra-cpp-0.1/src')
+                    def hayaiTmp = new File(project.buildDir, "tmp/hayai/hayai-${hayaiTag}/src")
                     inputs.dir hayaiTmp
                     outputs.dir dest
                     from hayaiTmp
