@@ -12,7 +12,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.comsysto.gradle'
-version = '0.2.0-SNAPSHOT'
+version = '0.2.0'
 
 repositories {
     jcenter()
@@ -91,9 +91,9 @@ bintray {
         issueTrackerUrl = 'https://github.com/comsysto/crolabefra-cpp/issues'
         vcsUrl = 'https://github.com/comsysto/crolabefra-cpp'
         version {
-            vcsTag = '0.1.0'
+            vcsTag = '0.2.0'
             released  = new Date()
-            desc = 'Initial release'
+            desc = 'Library maintenance release'
             attributes = ['gradle-plugin': 'com.comsysto.gradle.crolabefra.cpp:com.comsysto.gradle:crolabefra-cpp-plugin']
         }
     }
