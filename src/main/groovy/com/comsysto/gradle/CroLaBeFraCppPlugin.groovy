@@ -90,7 +90,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
         project.tasks.create(
                 [
                         name     : 'installHayaiToLib',
-                        group    : 'crolabefra',
+                        group    : 'crolabefra support',
                         dependsOn: 'extractHayai',
                         type     : Copy
                 ],
@@ -109,7 +109,6 @@ class CroLaBeFraCppPlugin extends CppPlugin {
         project.tasks.create(
                 [
                         name     : 'installHayai',
-                        group    : 'crolabefra',
                         dependsOn: 'extractHayai',
                         type     : Copy
                 ],
