@@ -15,7 +15,9 @@ class CroLaBeFraCppPlugin extends CppPlugin {
     void apply(Project project) {
         super.apply(project)
         def extension = project.extensions.create('crolabefra', CroLaBeFraPluginExtension)
-        def hayaiTag = 'crolabefra-cpp-0.1'
+        def repository = 'bensteinert'
+        def hayaiTag = 'crolabefra-cpp-0.2'
+
         project.model {
             components {
                 hayai(NativeLibrarySpec) {
@@ -64,7 +66,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     description 'Download Hayai HEAD revision from Github.'
                     def destFile = new File(project.buildDir, 'tmp/hayai.zip')
                     outputs.dir destFile
-                    src "https://github.com/bensteinert/hayai/archive/${hayaiTag}.zip"
+                    src "https://github.com/${repository}/hayai/archive/${hayaiTag}.zip"
                     dest destFile
                 }
         )
