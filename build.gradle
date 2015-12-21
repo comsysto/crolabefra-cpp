@@ -17,7 +17,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: "com.gradle.plugin-publish"
 
 group = 'com.comsysto.gradle'
-version = new Version('0.2.0')
+version = new Version('0.3.0-SNAPSHOT')
 status = version.status
 
 repositories {
