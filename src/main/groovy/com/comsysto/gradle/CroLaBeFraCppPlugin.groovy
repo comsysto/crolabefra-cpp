@@ -175,12 +175,12 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mappedResult.name = benchmark.name
 
                     mappedResult.numberOfIterationsPerRun = Integer.valueOf(benchmark.numberOfIterationsPerRun)
-                    mappedResult.averageTime = Double.valueOf(benchmark.averagePerRun)
-                    mappedResult.fastestTime = Double.valueOf(benchmark.fastestRun)
-                    mappedResult.slowestTime = Double.valueOf(benchmark.slowestRun)
+                    mappedResult.averageTime = Double.valueOf(benchmark.averagePerRun) / 1_000_000d
+                    mappedResult.fastestTime = Double.valueOf(benchmark.fastestRun) / 1_000_000d
+                    mappedResult.slowestTime = Double.valueOf(benchmark.slowestRun) / 1_000_000d
                     mappedResult.numberOfRuns = Integer.valueOf(benchmark.numberOfRuns)
-                    mappedResult.totalTime = Double.valueOf(benchmark.totalTime)
-                    mappedResult.unit = 'ns'
+                    mappedResult.totalTime = Double.valueOf(benchmark.totalTime) / 1_000_000d
+                    mappedResult.unit = 'ms'
 
                     mappedResultList.add(mappedResult)
                 }
