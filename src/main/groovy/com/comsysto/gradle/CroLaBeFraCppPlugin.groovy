@@ -185,6 +185,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                     mappedResultList.add(mappedResult)
                 }
 
+
                 File destFile = new File(project.buildDir, 'results/crolabefra-cpp.json')
                 destFile.getParentFile().mkdirs()
                 if (destFile.exists()){
@@ -196,6 +197,25 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 destFile.withWriter('UTF-8', {writer ->
                     writer.write(JsonOutput.prettyPrint(JsonOutput.toJson(mappedResultList)))
                 })
+
+                // check whether mothership is reachable
+                def rootProject = project.getRootProject()
+                if (rootProject.getTasksByName('crolabefra', false)) {
+                    println('Mothership is there :)')
+                    // write mapped results back to dest file
+                    File rootDestFile = new File(rootProject.buildDir, 'results/data/crolabefra-cpp.js')
+                    rootDestFile.getParentFile().mkdirs()
+                    if (rootDestFile.exists()) {
+                        rootDestFile.delete()
+                    }
+                    rootDestFile.createNewFile();
+                    rootDestFile.withWriter('UTF-8', { writer ->
+                        writer.write("crolabefra.data.cpp = ")
+                        writer.write(JsonOutput.prettyPrint(JsonOutput.toJson(mappedResultList)))
+                    })
+                } else {
+                    println('No mothership :(')
+                }
             }
         }
     }
