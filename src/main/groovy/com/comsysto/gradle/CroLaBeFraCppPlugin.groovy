@@ -131,7 +131,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 }
         )
 
-        project.tasks.create(
+        def crolabefraCpp = project.tasks.create(
                 [
                         name     : 'runCppBenchmarks',
                         group    : 'crolabefra',
@@ -146,20 +146,9 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 }
         )
 
-        def mapResultsTask = project.tasks.create(
-                [
-                        name     : 'mapCppResults',
-                        group    : 'crolabefra'//,
-                        //dependsOn: ['runCppBenchmarks'],
-                ],
-                {
-                    mustRunAfter 'runCppBenchmarks'
-                    description 'Converts Hayai Cpp benchmarks to CroLaBeFra format'
-                    inputs.file 'binaries/hayaiRunnerExecutable/result.json'
-                }
-        )
 
-        mapResultsTask.doFirst {
+
+        crolabefraCpp.doLast {
             File file = new File(project.buildDir, 'binaries/hayaiRunnerExecutable/result.json')
             if (file.exists()) {
 
@@ -203,7 +192,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 if (rootProject.getTasksByName('crolabefra', false)) {
                     println('Mothership is there :)')
                     // write mapped results back to dest file
-                    File rootDestFile = new File(rootProject.buildDir, 'results/data/crolabefra-cpp.js')
+                    File rootDestFile = new File(rootProject.buildDir, 'results/mothership/data/crolabefra-cpp.js')
                     rootDestFile.getParentFile().mkdirs()
                     if (rootDestFile.exists()) {
                         rootDestFile.delete()
