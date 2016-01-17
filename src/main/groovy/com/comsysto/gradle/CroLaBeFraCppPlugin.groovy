@@ -1,5 +1,8 @@
 package com.comsysto.gradle
+
 import de.undercouch.gradle.tasks.download.Download
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
@@ -34,7 +37,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                             builtBy(project.tasks.getByName('installHayai'));
                         }
                     }
-                    binaries.all{
+                    binaries.all {
                         tasks.withType(CppCompile) {
                             dependsOn 'installHayai'
                         }
@@ -59,8 +62,8 @@ class CroLaBeFraCppPlugin extends CppPlugin {
 
         project.tasks.create(
                 [
-                        name  : 'downloadHayai',
-                        type  : Download
+                        name: 'downloadHayai',
+                        type: Download
                 ],
                 {
                     description 'Download Hayai HEAD revision from Github.'
@@ -128,11 +131,11 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 }
         )
 
-        project.tasks.create(
+        def crolabefraCpp = project.tasks.create(
                 [
                         name     : 'runCppBenchmarks',
                         group    : 'crolabefra',
-                        dependsOn: ['installHayai','assemble'],
+                        dependsOn: ['installHayai', 'assemble'],
                         type     : Exec
                 ],
                 {
@@ -143,5 +146,66 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 }
         )
 
+
+
+        crolabefraCpp.doLast {
+            File file = new File(project.buildDir, 'binaries/hayaiRunnerExecutable/result.json')
+            if (file.exists()) {
+
+                def json = file.withReader { reader ->
+                    new JsonSlurper().parse(reader)
+                }
+
+                def mappedResultList = []
+                json.each { benchmark ->
+                    def Map mappedResult = [:]
+
+                    mappedResult.group = benchmark.group
+                    mappedResult.name = benchmark.name
+
+                    mappedResult.numberOfIterationsPerRun = Integer.valueOf(benchmark.numberOfIterationsPerRun)
+                    mappedResult.averageTime = Double.valueOf(benchmark.averagePerRun) / 1_000_000d
+                    mappedResult.fastestTime = Double.valueOf(benchmark.fastestRun) / 1_000_000d
+                    mappedResult.slowestTime = Double.valueOf(benchmark.slowestRun) / 1_000_000d
+                    mappedResult.numberOfRuns = Integer.valueOf(benchmark.numberOfRuns)
+                    mappedResult.totalTime = Double.valueOf(benchmark.totalTime) / 1_000_000d
+                    mappedResult.unit = 'ms'
+
+                    mappedResultList.add(mappedResult)
+                }
+
+
+                File destFile = new File(project.buildDir, 'results/crolabefra-cpp.json')
+                destFile.getParentFile().mkdirs()
+                if (destFile.exists()){
+                    destFile.delete()
+                }
+                destFile.createNewFile();
+
+                // for now, map values though as they are
+                destFile.withWriter('UTF-8', {writer ->
+                    writer.write(JsonOutput.prettyPrint(JsonOutput.toJson(mappedResultList)))
+                })
+
+                // check whether mothership is reachable
+                def rootProject = project.getRootProject()
+                if (rootProject.getTasksByName('crolabefra', false)) {
+                    println('Mothership is there :)')
+                    // write mapped results back to dest file
+                    File rootDestFile = new File(rootProject.buildDir, 'results/mothership/data/crolabefra-cpp.js')
+                    rootDestFile.getParentFile().mkdirs()
+                    if (rootDestFile.exists()) {
+                        rootDestFile.delete()
+                    }
+                    rootDestFile.createNewFile();
+                    rootDestFile.withWriter('UTF-8', { writer ->
+                        writer.write("crolabefra.data.cpp = ")
+                        writer.write(JsonOutput.prettyPrint(JsonOutput.toJson(mappedResultList)))
+                    })
+                } else {
+                    println('No mothership :(')
+                }
+            }
+        }
     }
 }

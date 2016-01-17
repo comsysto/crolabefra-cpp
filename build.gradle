@@ -6,8 +6,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.1"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.5'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.3"
     }
 }
 
@@ -17,7 +17,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: "com.gradle.plugin-publish"
 
 group = 'com.comsysto.gradle'
-version = new Version('0.2.0')
+version = new Version('0.3.0-SNAPSHOT')
 status = version.status
 
 repositories {
@@ -27,7 +27,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'de.undercouch:gradle-download-task:2.0.0'
+    compile 'de.undercouch:gradle-download-task:2.1.0'
 }
 
 
