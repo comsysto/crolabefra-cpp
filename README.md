@@ -3,6 +3,9 @@ Gradle Extension to integrate Hayai micro benchmarks for C/C++ code into  _CroLa
 
 Tested with gradle up to version 2.8
 
+## CroLaBeFra integration
+This gradle plugin is part of a toolset which is instrumented with a ['mothership'](https://github.com/comsysto/crolabefra-mothership) plugin, that should be applied to a surrounding root project. Check also the POC project mentioned above!
+
 ## Usage
 
     plugins {
@@ -28,6 +31,4 @@ Furthermore, with
     
     $ gradle installHayaiToLib 
 
-Gradle additionally installs the Hayai library source to {PROJECT_ROOT}/lib for development of benchmarks.
-    
-
+you can additionally install the Hayai library source to {PROJECT_ROOT}/lib for development of benchmarks.
