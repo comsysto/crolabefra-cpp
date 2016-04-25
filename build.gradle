@@ -17,7 +17,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: "com.gradle.plugin-publish"
 
 group = 'com.comsysto.gradle'
-version = new Version('0.3.0')
+version = new Version('0.4.0-SNAPSHOT')
 status = version.status
 
 repositories {
@@ -113,7 +113,7 @@ bintray {
         version {
             vcsTag = "${project.version}"
             released  = new Date()
-            desc = 'Library feature release'
+            desc = 'Library maintenance release'
             attributes = ['gradle-plugin': 'com.comsysto.gradle.crolabefra.cpp:com.comsysto.gradle:crolabefra-cpp-plugin']
         }
     }
