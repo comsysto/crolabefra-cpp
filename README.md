@@ -1,7 +1,7 @@
 # crolabefra-cpp
 Gradle Extension to integrate Hayai micro benchmarks for C/C++ code into  _CroLaBeFra (Cross-Language-Benchmarking-Framework)_ - see https://github.com/bensteinert/crolabefra-setup-poc for a detailed POC and use case.
 
-Tested with gradle up to version 2.8
+Tested with gradle up to version 2.13
 
 ## CroLaBeFra integration
 This gradle plugin is part of a toolset which is instrumented with a ['mothership'](https://github.com/comsysto/crolabefra-mothership) plugin, that should be applied to a surrounding root project. Check also the POC project mentioned above!
@@ -9,7 +9,7 @@ This gradle plugin is part of a toolset which is instrumented with a ['mothershi
 ## Usage
 
     plugins {
-        id "com.comsysto.gradle.crolabefra.cpp" version "0.3.0"
+        id "com.comsysto.gradle.crolabefra.cpp" version "0.3.1"
     }
        
     crolabefra {
