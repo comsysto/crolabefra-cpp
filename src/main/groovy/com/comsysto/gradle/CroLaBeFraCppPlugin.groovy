@@ -141,7 +141,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
                 {
                     mustRunAfter 'assemble'
                     description 'Executes assembled Hayai Cpp benchmarks'
-                    workingDir './build/binaries/hayaiRunnerExecutable'
+                    workingDir './build/exe/hayaiRunner'
                     commandLine Os.isFamily(Os.FAMILY_WINDOWS) ? 'hayaiRunner.exe' : './hayaiRunner'
                 }
         )
@@ -149,7 +149,7 @@ class CroLaBeFraCppPlugin extends CppPlugin {
 
 
         crolabefraCpp.doLast {
-            File file = new File(project.buildDir, 'binaries/hayaiRunnerExecutable/result.json')
+            File file = new File(project.buildDir, 'exe/hayaiRunner/result.json')
             if (file.exists()) {
 
                 def json = file.withReader { reader ->
